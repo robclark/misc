@@ -8,8 +8,8 @@
 @
 @  This program is distributed in the hope that it will be useful,
 @  but WITHOUT ANY WARRANTY; without even the implied warranty of
-@  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE whatsoever.
-@  It may even kill bambi.  Which would be sad.  But I disclaim
+@  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE whatsoever. It
+@  may even kill bambi's mother.  Which would be sad.  But I disclaim
 @  responsibility.  See http://sam.zoy.org/wtfpl/ for details.
 @
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -23,7 +23,7 @@
 @    Step 1:  arm-none-linux-gnueabi-gcc quine-0.S -o quine-0
 @    Step 2:  quine-0 > quine-1.S   (on ARM linux)
 @    Step 3:  arm-none-linux-gnueabi-gcc quine-1.S -o quine-1
-@    Step 4:  quine-1 > quine-2.S  (on ARM linux)
+@    Step 4:  quine-1 > quine-2.S   (on ARM linux)
 @    Step 5:  diff quine-1.S quine-2.S
 @    Step 6:  ???
 @    Step 7:  Profit!
@@ -54,14 +54,9 @@ main:
 @ r12:    saved lr to branch to at end of program (if we really need an extra
 @         register, this could be pushed on stack)
 code_loop:
- @@@@ debug
- @LDR r0, [r3]
- @BL print_int
- @@@@ end debug
-
  LDR r4, [r3]
 
- @@@@ disassemble intr in r4 here:
+ @@@@ disassemble instr in r4 here:
  @ put condition (for applicable instructions) in r5:
  MOV r5, r4, LSR #28
  @ check for the special case of BX:
@@ -129,7 +124,7 @@ instr_dpN_Rd:
  BL print_comma
 
 instr_dpN_operand1:
- @ note:  MOV ('1101') and MVN ('1111'), operand1 is ignored:
+ @ note:  for MOV ('1101') and MVN ('1111'), operand1 is ignored:
  MOV r0, r7, LSR #2
  ORR r0, r0, #2
  CMP r0, #15
@@ -265,10 +260,9 @@ instr_b:
  MOV r0, r0, LSL #2
  @ convert offset into an offset relative to main, because we need to emit
  @ a label relative branch target:
- @   (1) figure out current instruction offset from main
- SUB r1, r3, r11
- ADD r0, r0, r1
- ADD r0, r0, #8    @ add two instructions to account for the pipeline
+ SUB r1, r3, r11        @ figure out current instruction offset from main
+ ADD r0, r0, r1         @ convert to branch target offset from main
+ ADD r0, r0, #8         @ add two instructions to account for the pipeline
  MOV r1, #1
  BL print_int
  B code_loop_end
@@ -395,7 +389,7 @@ strings_loop_end:
 @ Various helper printer routines:
 @
 
-@ print the condition code, pased in r5 (destroys r0-r2):
+@ print the condition code, passed in r5 (destroys r0-r2):
 print_cond:
  CMP r5, #0xe
  BXEQ lr
@@ -450,7 +444,7 @@ print_reg:
  MOV r2, #4
  B print_str
 
-@ print a comman (destroys r0-r2):
+@ print a comma (destroys r0-r2):
 print_comma:
  MOV r0, #1
  B print_misc

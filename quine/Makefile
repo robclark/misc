@@ -4,7 +4,7 @@ REMOTE = root@128.247.79.99
 
 ##############################################
 
-AS = $(CROSS)gcc -Xassembler --strip-local-absolute
+AS = $(CROSS)gcc
 
 ALL = quine-0 quine-1 quine-1.S quine-2.S
 
